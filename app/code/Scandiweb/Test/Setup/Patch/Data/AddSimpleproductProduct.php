@@ -18,27 +18,27 @@ class AddSimpleproductProduct implements DataPatchInterface
     /**
      * @var ModuleDataSetupInterface
      */
-    private ModuleDataSetupInterface $moduleDataSetup;
+    protected ModuleDataSetupInterface $moduleDataSetup;
 
     /**
      * @var EavSetupFactory
      */
-    private EavSetupFactory $eavSetupFactory;
+    protected EavSetupFactory $eavSetupFactory;
 
     /**
      * @var ProductRepositoryInterface
      */
-    private ProductInterfaceFactory $productInterfaceFactory;
+    protected ProductInterfaceFactory $productInterfaceFactory;
 
     /**
      * @var CategoryLinkManagementInterface
      */
-    private CategoryLinkManagementInterface $categoryLinkManagement;
+    protected CategoryLinkManagementInterface $categoryLinkManagement;
 
     /**
      * @var LoggerInterface
      */
-    private LoggerInterface $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @var array
