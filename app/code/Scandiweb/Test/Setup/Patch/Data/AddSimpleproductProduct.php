@@ -8,7 +8,6 @@ use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Catalog\Api\CategoryLinkManagementInterface;
-use Magento\Framework\App\State;
 use Psr\Log\LoggerInterface;
 use Magento\InventoryApi\Api\Data\SourceItemInterface;
 use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
@@ -56,11 +55,6 @@ class AddSimpleproductProduct implements DataPatchInterface
     protected $categoryIds = [3];
 
     /**
-     * @var State
-     */
-    protected State $state;
-
-    /**
      * @var SourceItemInterfaceFactory
      */
     protected SourceItemInterfaceFactory $sourceItemFactory;
@@ -78,7 +72,6 @@ class AddSimpleproductProduct implements DataPatchInterface
      * @param SourceItemInterfaceFactory $sourceItemFactory
      * @param SourceItemsSaveInterface $sourceItemsSaveInterface
      * @param LoggerInterface $logger
-     * @param State $state
      */
     public function __construct(
         EavSetupFactory                 $eavSetupFactory,
@@ -87,14 +80,12 @@ class AddSimpleproductProduct implements DataPatchInterface
         SourceItemInterfaceFactory      $sourceItemFactory,
         SourceItemsSaveInterface        $sourceItemsSaveInterface,
         LoggerInterface                 $logger,
-        State                           $state
     )
     {
         $this->eavSetupFactory = $eavSetupFactory;
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->categoryLinkManagement = $categoryLinkManagement;
         $this->logger = $logger;
-        $this->state = $state;
         $this->sourceItemFactory = $sourceItemFactory;
         $this->sourceItemsSaveInterface = $sourceItemsSaveInterface;
     }
@@ -119,7 +110,6 @@ class AddSimpleproductProduct implements DataPatchInterface
                 ->setVisibility($this->productProperties['visibility'])
                 ->setTypeId($this->productProperties['type_id'])
                 ->setStockData([
-                    'use_config_manage_stock' => 1,
                     'is_qty_decimal' => 0,
                     'is_in_stock' => 1
                 ]);
@@ -142,7 +132,6 @@ class AddSimpleproductProduct implements DataPatchInterface
             $this->logger->critical($e->getMessage());
         }
     }
-
 
     /**
      * Get array of patches that have to be executed prior to this.
