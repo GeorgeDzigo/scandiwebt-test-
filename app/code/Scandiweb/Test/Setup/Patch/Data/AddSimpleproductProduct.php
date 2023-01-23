@@ -108,7 +108,6 @@ class AddSimpleproductProduct implements DataPatchInterface
                 ->setTypeId($this->productProperties['type_id'])
                 ->setStockData(
                     [
-                        'use_config_manage_stock' => 0,
                         'manage_stock' => 1,
                         'is_in_stock' => 1,
                         'qty' => 999999999
