@@ -8,10 +8,10 @@ use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
-use \Magento\Catalog\Api\CategoryLinkManagementInterface;
+use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Magento\Framework\App\State;
-use \Psr\Log\LoggerInterface;
-use \Exception;
+use Psr\Log\LoggerInterface;
+use Exception;
 
 class AddSimpleproductProduct implements DataPatchInterface
 {
