@@ -87,10 +87,17 @@ class AddSimpleproductProduct implements DataPatchInterface
         $this->appState->emulateAreaCode('adminhtml', [$this, 'execute']);
     }
 
+    /**
+     * @return void
+     */
     public function execute()
     {
         try {
             $product = $this->productInterfaceFactory->create();
+
+            if ($product->getIdBySku($this->productProperties['sku'])) {
+                return;
+            }
 
             $product->setSku($this->productProperties['sku'])
                 ->setName($this->productProperties['name'])
