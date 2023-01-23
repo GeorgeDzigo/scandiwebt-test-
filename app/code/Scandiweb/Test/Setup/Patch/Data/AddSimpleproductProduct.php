@@ -16,11 +16,6 @@ use Exception;
 class AddSimpleproductProduct implements DataPatchInterface
 {
     /**
-     * @var ModuleDataSetupInterface
-     */
-    protected ModuleDataSetupInterface $moduleDataSetup;
-
-    /**
      * @var EavSetupFactory
      */
     protected EavSetupFactory $eavSetupFactory;
@@ -59,7 +54,6 @@ class AddSimpleproductProduct implements DataPatchInterface
     protected $categoryIds = [3];
 
     /**
-     * @param ModuleDataSetupInterface $moduleDataSetup
      * @param EavSetupFactory $eavSetupFactory
      * @param ProductInterfaceFactory $productInterfaceFactory
      * @param CategoryLinkManagementInterface $categoryLinkManagement
@@ -68,7 +62,6 @@ class AddSimpleproductProduct implements DataPatchInterface
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function __construct(
-        ModuleDataSetupInterface        $moduleDataSetup,
         EavSetupFactory                 $eavSetupFactory,
         ProductInterfaceFactory         $productInterfaceFactory,
         CategoryLinkManagementInterface $categoryLinkManagement,
@@ -76,7 +69,6 @@ class AddSimpleproductProduct implements DataPatchInterface
         State                           $state
     )
     {
-        $this->moduleDataSetup = $moduleDataSetup;
         $this->eavSetupFactory = $eavSetupFactory;
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->categoryLinkManagement = $categoryLinkManagement;
