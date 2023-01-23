@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Scandiweb\Test\Setup\Patch\Data;
 
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
-use Magento\Eav\Setup\EavSetupFactory;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Psr\Log\LoggerInterface;
@@ -16,11 +15,6 @@ use Exception;
 
 class AddSimpleproductProduct implements DataPatchInterface
 {
-    /**
-     * @var EavSetupFactory
-     */
-    protected EavSetupFactory $eavSetupFactory;
-
     /**
      * @var ProductRepositoryInterface
      */
@@ -64,9 +58,7 @@ class AddSimpleproductProduct implements DataPatchInterface
      */
     protected SourceItemsSaveInterface $sourceItemsSaveInterface;
 
-
     /**
-     * @param EavSetupFactory $eavSetupFactory
      * @param ProductInterfaceFactory $productInterfaceFactory
      * @param CategoryLinkManagementInterface $categoryLinkManagement
      * @param SourceItemInterfaceFactory $sourceItemFactory
@@ -74,15 +66,13 @@ class AddSimpleproductProduct implements DataPatchInterface
      * @param LoggerInterface $logger
      */
     public function __construct(
-        EavSetupFactory                 $eavSetupFactory,
         ProductInterfaceFactory         $productInterfaceFactory,
         CategoryLinkManagementInterface $categoryLinkManagement,
         SourceItemInterfaceFactory      $sourceItemFactory,
         SourceItemsSaveInterface        $sourceItemsSaveInterface,
-        LoggerInterface                 $logger,
+        LoggerInterface $logger
     )
     {
-        $this->eavSetupFactory = $eavSetupFactory;
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->categoryLinkManagement = $categoryLinkManagement;
         $this->logger = $logger;
@@ -90,8 +80,11 @@ class AddSimpleproductProduct implements DataPatchInterface
         $this->sourceItemsSaveInterface = $sourceItemsSaveInterface;
     }
 
+
     /**
      * Run code inside patch
+     *
+     * @return AddSimpleproductProduct|void
      */
     public function apply()
     {
@@ -135,7 +128,7 @@ class AddSimpleproductProduct implements DataPatchInterface
 
     /**
      * Get array of patches that have to be executed prior to this.
-     * @return string[]
+     * @return array|string[]
      */
     public static function getDependencies()
     {
@@ -145,7 +138,7 @@ class AddSimpleproductProduct implements DataPatchInterface
     /**
      * Get aliases (previous names) for the patch.
      *
-     * @return string[]
+     * @return array|string[]
      */
     public function getAliases()
     {
