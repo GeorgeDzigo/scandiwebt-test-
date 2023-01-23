@@ -6,7 +6,6 @@ namespace Scandiweb\Test\Setup\Patch\Data;
 
 use Magento\Catalog\Api\Data\ProductInterfaceFactory;
 use Magento\Eav\Setup\EavSetupFactory;
-use Magento\Framework\Setup\ModuleDataSetupInterface;
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Magento\Framework\App\State;
@@ -54,12 +53,16 @@ class AddSimpleproductProduct implements DataPatchInterface
     protected $categoryIds = [3];
 
     /**
+     * @var State
+     */
+    protected State $state;
+
+    /**
      * @param EavSetupFactory $eavSetupFactory
      * @param ProductInterfaceFactory $productInterfaceFactory
      * @param CategoryLinkManagementInterface $categoryLinkManagement
      * @param LoggerInterface $logger
      * @param State $state
-     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function __construct(
         EavSetupFactory                 $eavSetupFactory,
@@ -73,13 +76,18 @@ class AddSimpleproductProduct implements DataPatchInterface
         $this->productInterfaceFactory = $productInterfaceFactory;
         $this->categoryLinkManagement = $categoryLinkManagement;
         $this->logger = $logger;
-        $state->setAreaCode('adminhtml');
+        $this->state = $state;
     }
 
     /**
      * Run code inside patch
      */
     public function apply()
+    {
+        $this->appState->emulateAreaCode('adminhtml', [$this, 'execute']);
+    }
+
+    public function execute()
     {
         try {
             $product = $this->productInterfaceFactory->create();
