@@ -10,6 +10,9 @@ use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Catalog\Api\CategoryLinkManagementInterface;
 use Magento\Framework\App\State;
 use Psr\Log\LoggerInterface;
+use Magento\InventoryApi\Api\Data\SourceItemInterface;
+use Magento\InventoryApi\Api\Data\SourceItemInterfaceFactory;
+use Magento\InventoryApi\Api\SourceItemsSaveInterface;
 use Exception;
 
 class AddSimpleproductProduct implements DataPatchInterface
@@ -58,9 +61,22 @@ class AddSimpleproductProduct implements DataPatchInterface
     protected State $state;
 
     /**
+     * @var SourceItemInterfaceFactory
+     */
+    protected SourceItemInterfaceFactory $sourceItemFactory;
+
+    /**
+     * @var SourceItemsSaveInterface
+     */
+    protected SourceItemsSaveInterface $sourceItemsSaveInterface;
+
+
+    /**
      * @param EavSetupFactory $eavSetupFactory
      * @param ProductInterfaceFactory $productInterfaceFactory
      * @param CategoryLinkManagementInterface $categoryLinkManagement
+     * @param SourceItemInterfaceFactory $sourceItemFactory
+     * @param SourceItemsSaveInterface $sourceItemsSaveInterface
      * @param LoggerInterface $logger
      * @param State $state
      */
@@ -68,6 +84,8 @@ class AddSimpleproductProduct implements DataPatchInterface
         EavSetupFactory                 $eavSetupFactory,
         ProductInterfaceFactory         $productInterfaceFactory,
         CategoryLinkManagementInterface $categoryLinkManagement,
+        SourceItemInterfaceFactory      $sourceItemFactory,
+        SourceItemsSaveInterface        $sourceItemsSaveInterface,
         LoggerInterface                 $logger,
         State                           $state
     )
@@ -77,20 +95,14 @@ class AddSimpleproductProduct implements DataPatchInterface
         $this->categoryLinkManagement = $categoryLinkManagement;
         $this->logger = $logger;
         $this->state = $state;
+        $this->sourceItemFactory = $sourceItemFactory;
+        $this->sourceItemsSaveInterface = $sourceItemsSaveInterface;
     }
 
     /**
      * Run code inside patch
      */
     public function apply()
-    {
-        $this->appState->emulateAreaCode('adminhtml', [$this, 'execute']);
-    }
-
-    /**
-     * @return void
-     */
-    public function execute()
     {
         try {
             $product = $this->productInterfaceFactory->create();
@@ -106,20 +118,31 @@ class AddSimpleproductProduct implements DataPatchInterface
                 ->setPrice($this->productProperties['price'])
                 ->setVisibility($this->productProperties['visibility'])
                 ->setTypeId($this->productProperties['type_id'])
-                ->setStockData(
-                    [
-                        'manage_stock' => 1,
-                        'is_in_stock' => 1,
-                        'qty' => 999999999
-                    ]
-                );
+                ->setStockData([
+                    'use_config_manage_stock' => 1,
+                    'is_qty_decimal' => 0,
+                    'is_in_stock' => 1
+                ]);
 
             $product->save();
             $this->categoryLinkManagement->assignProductToCategories($this->productProperties['sku'], $this->categoryIds);
+
+            $sourceItem = $this->sourceItemFactory->create();
+            $sourceItem->setSourceCode('default');
+
+            $sourceItem->setQuantity(100);
+            $sourceItem->setSku($product->getSku());
+
+            $sourceItem->setStatus(SourceItemInterface::STATUS_IN_STOCK);
+            $sourceItems[] = $sourceItem;
+
+            $this->sourceItemsSaveInterface->execute($sourceItems);
+
         } catch (Exception $e) {
             $this->logger->critical($e->getMessage());
         }
     }
+
 
     /**
      * Get array of patches that have to be executed prior to this.
